@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class Reservation {
     private String  arrivalHour;
     private int     estimatedTime;
     private String  vehiclePlate;
+    private Boolean active;
 
     public Reservation(String id, Long clientId, String parkingLot, String vehicleType, 
         Date arrivalDate, String arrivalHour, int estimatedTime, String vehiclePlate) throws Exception {
@@ -30,6 +32,7 @@ public class Reservation {
         this.setArrivalDate(arrivalDate);
         this.setEstimatedTime(estimatedTime);
         this.vehiclePlate = vehiclePlate;
+        this.setActive();
     };
 
     public String getId() {
@@ -123,5 +126,22 @@ public class Reservation {
 
     public void setVehiclePlate(String vehiclePlate) {
         this.vehiclePlate = vehiclePlate;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive() {
+        Date currentDate = new Date();
+        this.active = false;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.arrivalDate);
+        calendar.add(Calendar.HOUR, this.estimatedTime / 60);
+        
+        if (calendar.getTime().after(currentDate)) {
+            this.active = true;
+        }
     }
 }

@@ -1,9 +1,12 @@
 package com.parkingWeb.reservations.controllers;
 
+import com.parkingWeb.reservations.exceptions.ReservationNotFoundException;
 import com.parkingWeb.reservations.repositories.ReservationRepository;
 import com.parkingWeb.reservations.models.Reservation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 import java.util.List;
+import java.util.HashMap;
 
 
 @RestController
@@ -15,9 +18,15 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/reservation")
-    Reservation newReservation(@RequestBody Reservation reservation) { 
-            return reservationRepository.save(reservation);
+    HashMap<String, Object> createReservation(@RequestBody Reservation reservation) {
+        HashMap<String, Object> response = new HashMap<>();
+        
+        response.put("status", "Successful reservation");        
+        reservationRepository.save(reservation);
+
+        return response;
     }
 
     @GetMapping("/reservations")
@@ -27,18 +36,16 @@ public class ReservationController {
 
     @GetMapping("/reservation/{id}")
     Reservation getReservation(@PathVariable String id) {
-        return reservationRepository.findById(id).orElse(null);
+        return reservationRepository.findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
     }
 
     @PutMapping("/reservation/update/{id}")
     Reservation updateReservation(@RequestBody Reservation reservationUpdate, 
-                                  @PathVariable String id) throws Exception {
+                                 @PathVariable String id) throws Exception, ReservationNotFoundException {
 
-        Reservation reservation = this.reservationRepository.findById(id).orElse(null);
-        
-        if (reservation == null) {
-            throw new Exception("The code of reservation don't exist in ParkingWeb register");
-        }
+        Reservation reservation = reservationRepository.findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
 
         reservation.setClientId(reservationUpdate.getClientId());
         reservation.setParkingLot(reservationUpdate.getparkingLot());
@@ -50,13 +57,11 @@ public class ReservationController {
         return reservationRepository.save(reservation);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/reservation/delete/{id}")
-    String deleteReservation(@PathVariable String id) throws Exception {
-        
-        Reservation reservation = this.reservationRepository.findById(id).orElse(null);
-        if (reservation == null) {
-            throw new Exception("The code of reservation don't exist in ParkingWeb register");
-        }
+    String deleteReservation(@PathVariable String id) {
+        reservationRepository.findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
 
         reservationRepository.deleteById(id);
 
