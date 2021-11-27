@@ -53,7 +53,7 @@ public class ReservationController {
             .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
     }
 
-    @GetMapping("/reservation/{parkingLot}/customers")
+    @GetMapping("/reservation/{parkingLot}/parkingLot")
     List<Reservation> getCustomers(@PathVariable String parkingLot) {        
         Map<String, Reservation> hm = new HashMap<String, Reservation>();
         List<Reservation> reservations = reservationRepository.findByParkingLot(parkingLot);
