@@ -2,8 +2,6 @@ package com.parkingWeb.reservations.models;
 
 import org.springframework.data.annotation.Id;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,22 +15,22 @@ public class Reservation {
     private Long    clientId;
     private String  parkingLot;
     private String  vehicleType;
-    private Date    arrivalDate;
-    private String  arrivalHour;
+    private Date    entryTime;
+    private Date    exitTime;
     private int     estimatedTime;
     private String  vehiclePlate;
-    private Boolean active;
+
 
     public Reservation(String id, Long clientId, String parkingLot, String vehicleType, 
-        Date arrivalDate, String arrivalHour, int estimatedTime, String vehiclePlate) throws Exception {
+        Date entryTime, int estimatedTime, String vehiclePlate) throws Exception {
         this.id = id;
         this.clientId = clientId;
         this.parkingLot = parkingLot;
+        this.vehiclePlate = vehiclePlate;        
         this.setvehicleType(vehicleType);
-        this.setArrivalDate(arrivalDate);
+        this.setEntryTime(entryTime);
         this.setEstimatedTime(estimatedTime);
-        this.vehiclePlate = vehiclePlate;
-        this.setActive();
+        this.setExitTime(estimatedTime);
     };
 
     public String getId() {
@@ -78,35 +76,23 @@ public class Reservation {
         }
     }
 
-    public Date getarrivalDate() {
-        return arrivalDate;
+    public Date getentryTime() {
+        return entryTime;
     }
 
-    public void setArrivalDate(Date arrivalDate) throws Exception {
-        //"2012-12-19T06:01:17.171Z"        
-        this.arrivalDate = null;
+    public void setEntryTime(Date entryTime) throws Exception {
+        Date currentDate = null;
+        this.entryTime = null;
 
         try {
-            Date currentDate = new Date();
-            if (arrivalDate.compareTo(currentDate) > 0) {
+            currentDate = new Date();
 
-                DateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'T' HH:mm:ss Z");
-                String strDate = formatter.format(arrivalDate);            
-                
-                this.arrivalDate = arrivalDate;
-                setArrivalHour(strDate.split(" ")[2]);
+            if (entryTime.after(currentDate)) {         
+                this.entryTime = entryTime;
             }
         } catch (Exception ex) {
-            throw new Exception("arrivalDate must occur after current date");
+            throw new Exception("entryTime must occur after current date");
         }
-    }
-
-    public String getArrivalHour() {
-        return arrivalHour;
-    }
-
-    public void setArrivalHour(String arrivalHour) {
-        this.arrivalHour = arrivalHour;       
     }
 
     public int getEstimatedTime() {
@@ -128,20 +114,16 @@ public class Reservation {
         this.vehiclePlate = vehiclePlate;
     }
 
-    public Boolean getActive() {
-        return active;
+    public Date getExitTime() {
+        return exitTime;
     }
 
-    public void setActive() {
-        Date currentDate = new Date();
-        this.active = false;
-
+    public void setExitTime(int estimatedTime) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(this.arrivalDate);
-        calendar.add(Calendar.HOUR, this.estimatedTime / 60);
-        
-        if (calendar.getTime().after(currentDate)) {
-            this.active = true;
-        }
+
+        calendar.setTime(this.entryTime);
+        calendar.add(Calendar.MINUTE, this.estimatedTime);
+
+        this.exitTime = calendar.getTime();
     }
 }
