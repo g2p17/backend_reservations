@@ -76,7 +76,7 @@ public class Reservation {
         }
     }
 
-    public Date getentryTime() {
+    public Date getEntryTime() {
         return entryTime;
     }
 

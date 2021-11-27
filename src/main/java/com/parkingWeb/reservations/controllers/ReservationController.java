@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.ListIterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
@@ -60,13 +61,35 @@ public class ReservationController {
 
         while(i.hasNext()) {
             Reservation reservation = i.next();
-            hm.put(reservation.getVehiclePlate(), reservation);            
+            hm.put(reservation.getVehiclePlate(), reservation);
         }
 
         List<Reservation> valueList = hm.values().stream().collect(Collectors.toList());      
 
         return valueList;
     }
+
+    @GetMapping("/reservation/{parkingLot}/count")
+    Map<String, Integer> getCountReservation(@PathVariable String parkingLot) {
+        Map<String, Integer> hm = new HashMap<String, Integer>();
+        List<Reservation> reservations = reservationRepository.findByParkingLot(parkingLot);
+        Iterator<Reservation> i = reservations.iterator();
+        Date currentDate = new Date();
+        int countActiveReservation = 0;
+
+        while(i.hasNext()) {
+
+            Reservation reservation = i.next();
+            if (currentDate.compareTo(reservation.getEntryTime()) >= 0 
+                && currentDate.compareTo(reservation.getExitTime()) <= 0);
+                countActiveReservation += 1;
+        }
+
+        hm.put(String.format("Active reservation in %s", parkingLot), countActiveReservation);
+
+        return hm;
+    }
+
 
     @PutMapping("/reservation/update/{id}")
     Reservation updateReservation(@RequestBody Reservation reservationUpdate, 
