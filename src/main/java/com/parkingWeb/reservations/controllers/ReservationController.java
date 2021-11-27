@@ -3,18 +3,9 @@ package com.parkingWeb.reservations.controllers;
 import com.parkingWeb.reservations.exceptions.ReservationNotFoundException;
 import com.parkingWeb.reservations.repositories.ReservationRepository;
 import com.parkingWeb.reservations.models.Reservation;
-
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ListIterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +45,11 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/{parkingLot}/parkingLot")
+    List<Reservation> getParkingLot(@PathVariable String parkingLot) {        
+        return reservationRepository.findByParkingLot(parkingLot);
+    }
+
+    @GetMapping("/reservation/{parkingLot}/parkingLot/customers")
     List<Reservation> getCustomers(@PathVariable String parkingLot) {        
         Map<String, Reservation> hm = new HashMap<String, Reservation>();
         List<Reservation> reservations = reservationRepository.findByParkingLot(parkingLot);
