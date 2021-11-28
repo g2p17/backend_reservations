@@ -1,11 +1,14 @@
 package com.parkingWeb.reservations.models;
 
 import org.springframework.data.annotation.Id;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import com.parkingWeb.reservations.exceptions.ReservationInvalidEntryTimeException;
+import com.parkingWeb.reservations.exceptions.ReservationInvalidEstimatedTimeException;
+import com.parkingWeb.reservations.exceptions.ReservationInvalidVehicleTypeException;
 
 
 public class Reservation {
@@ -22,7 +25,7 @@ public class Reservation {
 
 
     public Reservation(String id, Long clientId, String parkingLot, String vehicleType, 
-        Date entryTime, int estimatedTime, String vehiclePlate) throws Exception {
+        Date entryTime, int estimatedTime, String vehiclePlate) {
         this.id = id;
         this.clientId = clientId;
         this.parkingLot = parkingLot;
@@ -74,34 +77,31 @@ public class Reservation {
                 break;
             }
         }
+
+        if (this.vehicleType == "") 
+            throw new ReservationInvalidVehicleTypeException("Invalid vehicle type to update");
     }
 
     public Date getEntryTime() {
         return entryTime;
     }
 
-    public void setEntryTime(Date entryTime) throws Exception {
-        Date currentDate = null;
-        this.entryTime = null;
+    public void setEntryTime(Date entryTime) {
+        Date currentDate = new Date();
 
-        try {
-            currentDate = new Date();
-
-            if (entryTime.after(currentDate)) {         
-                this.entryTime = entryTime;
-            }
-        } catch (Exception ex) {
-            throw new Exception("entryTime must occur after current date");
-        }
+        if (entryTime.before(currentDate) || entryTime.equals(currentDate))
+            throw new ReservationInvalidEntryTimeException("The entryTime must occur after current date");
+        
+        this.entryTime = entryTime;
     }
 
     public int getEstimatedTime() {
         return estimatedTime;
     }
 
-    public void setEstimatedTime(int estimatedTime) throws Exception {
+    public void setEstimatedTime(int estimatedTime) {
         if (estimatedTime <= 0)           
-            throw new Exception("the estimated time must be grather than 0");
+            throw new ReservationInvalidEstimatedTimeException("The estimated time must be grather than 0");
 
         this.estimatedTime = estimatedTime;
     }
