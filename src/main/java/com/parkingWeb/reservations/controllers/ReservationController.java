@@ -63,4 +63,14 @@ public class ReservationController {
 
         return vehiclePlateCustomer.values().stream().collect(Collectors.toList());
     }
+
+    @GetMapping("/reservation/{parkingLot}/parkingLot")
+    List<Reservation> getParkingLot(@PathVariable String parkingLot) {        
+        return reservationRepository.findByParkingLot(parkingLot);
+    }
+
+    @GetMapping("/reservations")
+    List<Reservation> getReservations(){
+        return reservationRepository.findAll();
+    }
 }
