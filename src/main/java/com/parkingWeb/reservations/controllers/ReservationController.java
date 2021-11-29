@@ -1,15 +1,13 @@
 package com.parkingWeb.reservations.controllers;
 
 
-import com.parkingWeb.reservations.repositories.ReservationRepository;
 import com.parkingWeb.reservations.models.Reservation;
-import org.springframework.web.bind.annotation.*;
+import com.parkingWeb.reservations.repositories.ReservationRepository;
 import org.springframework.http.HttpStatus;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class ReservationController {
@@ -50,5 +48,19 @@ public class ReservationController {
         response.put(String.format("Active reservation in %s", parkingLot), countActiveReservation);
 
         return response;        
+    }
+
+    @GetMapping("/reservation/{parkingLot}/parkingLot/customers")
+    List<Reservation> getCustomers(@PathVariable String parkingLot) {
+        Map<String, Reservation> vehiclePlateCustomer = new HashMap<String, Reservation>();
+        List<Reservation> reservations = reservationRepository.findByParkingLot(parkingLot);
+        Iterator<Reservation> iterReservation = reservations.iterator();
+
+        while(iterReservation.hasNext()) {
+            Reservation reservation = iterReservation.next();
+            vehiclePlateCustomer.put(reservation.getVehiclePlate(), reservation);
+        }
+
+        return vehiclePlateCustomer.values().stream().collect(Collectors.toList());
     }
 }
