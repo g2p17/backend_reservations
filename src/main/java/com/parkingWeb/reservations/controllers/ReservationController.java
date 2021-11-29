@@ -37,17 +37,17 @@ public class ReservationController {
         Date currentDate = new Date();
         int countActiveReservation = 0;
 
-        while(iterReservation.hasNext()) {
+        while (iterReservation.hasNext()) {
 
             Reservation reservation = iterReservation.next();
-            if (currentDate.compareTo(reservation.getEntryTime()) >= 0 
-                && currentDate.compareTo(reservation.getExitTime()) <= 0);
-                countActiveReservation += 1;
+            if (currentDate.compareTo(reservation.getEntryTime()) >= 0
+                    && currentDate.compareTo(reservation.getExitTime()) <= 0) ;
+            countActiveReservation += 1;
         }
 
         response.put(String.format("Active reservation in %s", parkingLot), countActiveReservation);
 
-        return response;        
+        return response;
     }
 
     @GetMapping("/reservation/{parkingLot}/parkingLot/customers")
@@ -56,13 +56,14 @@ public class ReservationController {
         List<Reservation> reservations = reservationRepository.findByParkingLot(parkingLot);
         Iterator<Reservation> iterReservation = reservations.iterator();
 
-        while(iterReservation.hasNext()) {
+        while (iterReservation.hasNext()) {
             Reservation reservation = iterReservation.next();
             vehiclePlateCustomer.put(reservation.getVehiclePlate(), reservation);
         }
 
         return vehiclePlateCustomer.values().stream().collect(Collectors.toList());
     }
+
 
     @GetMapping("/reservation/{id}")
     Reservation getReservation(@PathVariable String id) {
@@ -98,4 +99,13 @@ public class ReservationController {
 
         return "The reservation has been deleted";
     }
+        @GetMapping("/reservation/{parkingLot}/parkingLot")
+        List<Reservation> getParkingLot(@PathVariable String parkingLot){
+            return reservationRepository.findByParkingLot(parkingLot);
+        }
+
+        @GetMapping("/reservations")
+        List<Reservation> getReservations() {
+            return reservationRepository.findAll();
+        }
 }
