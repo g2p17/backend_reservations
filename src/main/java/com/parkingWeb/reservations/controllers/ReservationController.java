@@ -1,6 +1,6 @@
 package com.parkingWeb.reservations.controllers;
 
-
+import com.parkingWeb.reservations.exceptions.ReservationNotFoundException;
 import com.parkingWeb.reservations.models.Reservation;
 import com.parkingWeb.reservations.repositories.ReservationRepository;
 import org.springframework.http.HttpStatus;
@@ -62,5 +62,40 @@ public class ReservationController {
         }
 
         return vehiclePlateCustomer.values().stream().collect(Collectors.toList());
+    }
+
+    @GetMapping("/reservation/{id}")
+    Reservation getReservation(@PathVariable String id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
+    }
+
+    @PutMapping("/reservation/update/{id}")
+    Reservation updateReservation(@RequestBody Reservation reservationUpdate,
+                                  @PathVariable String id) throws Exception, ReservationNotFoundException {
+
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
+
+        reservation.setClientId(reservationUpdate.getClientId());
+        reservation.setParkingLot(reservationUpdate.getparkingLot());
+        reservation.setvehicleType(reservationUpdate.getvehicleType());
+        reservation.setEntryTime(reservationUpdate.getExitTime());
+        reservation.setEstimatedTime(reservationUpdate.getEstimatedTime());
+        reservation.setExitTime(reservationUpdate.getEstimatedTime());
+        reservation.setVehiclePlate(reservationUpdate.getVehiclePlate());
+
+        return reservationRepository.save(reservation);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/reservation/delete/{id}")
+    String deleteReservation(@PathVariable String id) {
+        reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
+
+        reservationRepository.deleteById(id);
+
+        return "The reservation has been deleted";
     }
 }
