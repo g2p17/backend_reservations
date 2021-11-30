@@ -72,8 +72,7 @@ public class ReservationController {
     }
 
     @PutMapping("/reservation/update/{id}")
-    Reservation updateReservation(@RequestBody Reservation reservationUpdate,
-                                  @PathVariable String id) throws Exception, ReservationNotFoundException {
+    Reservation updateReservation(@RequestBody Reservation reservationUpdate, @PathVariable String id) {    
 
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("The code of reservation don't exist in ParkingWeb register"));
@@ -81,7 +80,7 @@ public class ReservationController {
         reservation.setClientId(reservationUpdate.getClientId());
         reservation.setParkingLot(reservationUpdate.getparkingLot());
         reservation.setvehicleType(reservationUpdate.getvehicleType());
-        reservation.setEntryTime(reservationUpdate.getExitTime());
+        reservation.setEntryTime(reservationUpdate.getEntryTime());
         reservation.setEstimatedTime(reservationUpdate.getEstimatedTime());
         reservation.setExitTime(reservationUpdate.getEstimatedTime());
         reservation.setVehiclePlate(reservationUpdate.getVehiclePlate());
