@@ -45,7 +45,7 @@ public class ReservationController {
             countActiveReservation += 1;
         }
 
-        response.put(String.format("Active reservation in %s", parkingLot), countActiveReservation);
+        response.put("reservations", countActiveReservation);
 
         return response;
     }
