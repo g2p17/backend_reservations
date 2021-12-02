@@ -1,6 +1,10 @@
 package com.parkingWeb.reservations.models;
 
 import org.springframework.data.annotation.Id;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,21 +14,29 @@ import com.parkingWeb.reservations.exceptions.ReservationInvalidEntryTimeExcepti
 import com.parkingWeb.reservations.exceptions.ReservationInvalidEstimatedTimeException;
 import com.parkingWeb.reservations.exceptions.ReservationInvalidVehicleTypeException;
 
-
+@ApiModel(description = "Class representing a reservation tracked by the application.")
 public class Reservation {
 
+    @ApiModelProperty(notes = "Unique identifier of the reservation.", example = "61a56c4f15b2234fec4383c6", required = true, position = 0)
     @Id
     private String  id;
-    private Long    clientId;
+    @ApiModelProperty(notes = "reference to the identifier of the customer who is making this reservation.", example = "John", required = true, position = 1)
+    private String    clientId;
+    @ApiModelProperty(notes = "Parking lot name.", example = "California", required = true, position = 2)
     private String  parkingLot;
+    @ApiModelProperty(notes = "References vehicle: vehicle type.", example = "Car, Motorcycle, Bicycle, Disabled Parking", required = true, position = 3)
     private String  vehicleType;
+    @ApiModelProperty(notes = "stores the customer’s arrival date.", example = "2021-12-25T07:01:00.405Z", required = true, position = 4)
     private Date    entryTime;
+    @ApiModelProperty(notes = "stores the customer’s departure (exit) date.", example = "2021-12-25T07:01:00.405Z", required = true, position = 5)
     private Date    exitTime;
+    @ApiModelProperty(notes = "stores the duration for which the reservation was made in minutes.", example = "60", required = true, position = 6)
     private int     estimatedTime;
+    @ApiModelProperty(notes = "References vehicle: vehicle plate.", example = "60DA3A", required = true, position = 7)
     private String  vehiclePlate;
 
 
-    public Reservation(String id, Long clientId, String parkingLot, String vehicleType, 
+    public Reservation(String id, String clientId, String parkingLot, String vehicleType, 
         Date entryTime, int estimatedTime, String vehiclePlate) {
         this.id = id;
         this.clientId = clientId;
@@ -40,11 +52,11 @@ public class Reservation {
         return id;
     }
 
-    public void setClientId(Long clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public Long getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
