@@ -21,7 +21,7 @@ public class Reservation {
     @Id
     private String  id;
     @ApiModelProperty(notes = "reference to the identifier of the customer who is making this reservation.", example = "John", required = true, position = 1)
-    private Long    clientId;
+    private String    clientId;
     @ApiModelProperty(notes = "Parking lot name.", example = "California", required = true, position = 2)
     private String  parkingLot;
     @ApiModelProperty(notes = "References vehicle: vehicle type.", example = "Car, Motorcycle, Bicycle, Disabled Parking", required = true, position = 3)
@@ -36,7 +36,7 @@ public class Reservation {
     private String  vehiclePlate;
 
 
-    public Reservation(String id, Long clientId, String parkingLot, String vehicleType, 
+    public Reservation(String id, String clientId, String parkingLot, String vehicleType, 
         Date entryTime, int estimatedTime, String vehiclePlate) {
         this.id = id;
         this.clientId = clientId;
@@ -52,11 +52,11 @@ public class Reservation {
         return id;
     }
 
-    public void setClientId(Long clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public Long getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
