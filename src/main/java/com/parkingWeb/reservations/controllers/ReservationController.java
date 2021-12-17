@@ -51,9 +51,9 @@ public class ReservationController {
         while (iterReservation.hasNext()) {
 
             Reservation reservation = iterReservation.next();
-            if (currentDate.compareTo(reservation.getEntryTime()) >= 0
-                    && currentDate.compareTo(reservation.getExitTime()) <= 0) ;
-            countActiveReservation += 1;
+
+            if ((reservation.getEntryTime()).after(currentDate) && (reservation.getExitTime()).after(currentDate)) 
+                countActiveReservation += 1;
         }
 
         response.put("reservations", countActiveReservation);
